@@ -31,6 +31,6 @@ public class OrderedLinkedListEntry<K, V> implements DictionaryEntry<K, V> {
 	}
 	
 	public OrderedLinkedListEntry<K, V> getNext() {
-		return this.next;
+		return next;
 	}
 }
