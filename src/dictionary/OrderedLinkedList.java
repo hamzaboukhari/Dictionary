@@ -52,11 +52,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 		
 		@Override
 		public void remove() {
-			if (current != null) {
-				OrderedLinkedList.this.remove(current.getKey());
-			} else {
-				throw new UnsupportedOperationException();
-			}
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -91,19 +87,6 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 		}
 	}
 	
-	/*private OrderedLinkedListEntry<K, V> findPrev(K searchKey) {
-		OrderedLinkedListEntry<K, V> prev = head;
-		if (prev != null && prev.getKey().compareTo(searchKey) < 0) {
-			OrderedLinkedListEntry<K, V> curr = prev.getNext();
-			while (curr != null && curr.getKey().compareTo(searchKey) <= 0) {
-				prev = curr;
-				curr = curr.getNext();
-			}
-			return prev;
-		}
-		return null;
-	}
-*/
 	@Override
 	public void put(K key, V value) {
 		
@@ -129,28 +112,6 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 		}
 		
 	}
-		/*OrderedLinkedListEntry<K, V> prev = findPrev(key);
-		if (head == null) {
-			OrderedLinkedListEntry<K, V> newNode = new OrderedLinkedListEntry<K, V>(key, value);
-			head = newNode;
-			numElems++;
-		} else if (prev == null) {
-			OrderedLinkedListEntry<K, V> newNode = new OrderedLinkedListEntry<K, V>(key, value);
-			newNode.setNext(head);
-			numElems++;
-		} else if (prev.getKey().equals(key)) {
-			prev.setValue(value);
-		} else if (prev.getKey().compareTo(key) < 0) {
-			OrderedLinkedListEntry<K, V> newNode = new OrderedLinkedListEntry<K, V>(key, value);
-			prev.setNext(newNode);
-			numElems++;
-	    } else if (prev.getKey().compareTo(key) > 0) {
-	    	OrderedLinkedListEntry<K, V> newNode = new OrderedLinkedListEntry<K, V>(key, value);
-			newNode.setNext(head);
-			numElems++;
-	    }
-		
-	}*/
 
 	@Override
 	public void remove(K key) throws NoSuchElementException {
@@ -173,20 +134,6 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 	    	throw new NoSuchElementException();
 	    }
 	}
-		
-		/*OrderedLinkedListEntry<K, V> prev = findPrev(key);
-		if (head == null) {
-			throw new NoSuchElementException();
-		} else if (prev == null) {
-			head = head.getNext();
-			numElems--;
-		} else if (prev.getNext().getKey().equals(key)) {
-	    	findPrev(prev.getKey()).setNext(prev.getNext());
-	    	numElems--;
-	    } else {
-	    	throw new NoSuchElementException();
-	    }
-	}*/
 
 	@Override
 	public void clear() {
