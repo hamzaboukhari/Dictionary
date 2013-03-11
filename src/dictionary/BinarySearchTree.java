@@ -17,8 +17,9 @@ import java.util.Stack;
 public class BinarySearchTree<K extends Comparable<? super K>, V> implements
         Dictionary<K, V> {
 
-	BinarySearchTreeEntry<K, V> root;
-	int numNodes = 0;
+	private BinarySearchTreeEntry<K, V> root;
+	private int numNodes = 0;
+	private int numMods = 0;
 	
 	public V getRootElem() throws NoSuchElementException {
 		if (root == null) { 
@@ -67,10 +68,11 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 
 	@Override
 	public V get(K key) throws NoSuchElementException {
-		if (root == null) {
+		BinarySearchTreeEntry<K, V> elem = getElem(root, key);
+		if (elem == null) {numNodes--;
 			throw new NoSuchElementException();
 		} else {
-			return getElem(root, key).getValue();
+			return elem.getValue();
 		}
 	}
 
@@ -85,6 +87,7 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 			BinarySearchTreeEntry<K, V> newNode = new BinarySearchTreeEntry<K, V>(key, newValue, null, null);
 			node = newNode;
 			numNodes++;
+			numMods++;
 		} else if (key.compareTo(node.getKey()) == 0) {
 			node.setValue(newValue);
 		} else if (key.compareTo(node.getKey()) < 0) {
@@ -107,6 +110,8 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 			throw new NoSuchElementException();
 		} else if (node.getKey().compareTo(key) == 0) {
 			node = removeNode(node);
+			numNodes--;
+			numMods++;
 		} else if (node.getKey().compareTo(key) > 0) {
 			node.setLeft(removeElem(node.getLeft(), key));
 		} else {
@@ -128,13 +133,14 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 			BinarySearchTreeEntry<K, V> newRight = deleteLeftMost(node.getRight());
 			replacementNode.setRight(newRight);
 			replacementNode.setLeft(node.getLeft());
-			numNodes--;
 			return replacementNode;
 		}
 	}
 	
 	private BinarySearchTreeEntry<K, V> findLeftMost(BinarySearchTreeEntry<K, V> node) {
-		if (node.getLeft() == null) {
+		if (node == null) {
+			return null;
+		} if (node.getLeft() == null) {
 			return node;
 		} else {
 			return findLeftMost(node.getLeft());
@@ -164,15 +170,21 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 
 	@Override
 	public Iterator<DictionaryEntry<K, V>> iterator() {
-		return new ListIterator();
+		return new TreeIterator();
 	}
 	
-	public class ListIterator implements Iterator<dictionary.DictionaryEntry<K, V>> {
+	public class TreeIterator implements Iterator<dictionary.DictionaryEntry<K, V>> {
 
+		private BinarySearchTreeEntry<K, V> result;
 		private BinarySearchTreeEntry<K, V> current;
+		private Stack<BinarySearchTreeEntry<K, V>> workList;
+		private int currentNumMods;
 		
-		private ListIterator() {
+		private TreeIterator() {
+			result = null;
 			current = root;
+			workList = new Stack<BinarySearchTreeEntry<K, V>>();
+			currentNumMods = numMods;
 		}
 		
 		@Override
@@ -182,13 +194,7 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 		
 		@Override
 		public DictionaryEntry<K, V> next() {
-			Stack<BinarySearchTreeEntry<K, V>> workList = new Stack<BinarySearchTreeEntry<K, V>>();
-			current = root;
-			BinarySearchTreeEntry<K, V> result = null;
-			
-			try {
-				BinarySearchTree.this.get(current.getKey());
-			} catch (NoSuchElementException e) {
+			if (currentNumMods != numMods) {
 				throw new ConcurrentModificationException();
 			}
 			
@@ -200,7 +206,7 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 			if (!workList.empty()) {
 				result = workList.pop();
 				current = result.getRight();
-				return result;
+				return result;  
 			} else {
 				throw new UnsupportedOperationException();
 			}

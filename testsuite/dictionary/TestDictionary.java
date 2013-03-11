@@ -94,6 +94,46 @@ public abstract class TestDictionary {
                 expected.hasNext());
 
     }
+    
+    @Test
+    public void testRemove() {
+        List<String> cats = Arrays.asList("practical", "dramatical",
+                "pragmatical", "fanatical", "oratorical", "delphioracle",
+                "skeptical", "dispeptical", "romantical", "pedantical",
+                "critical", "parasitical", "allegorical", "metaphorical",
+                "statistical", "mystical", "political", "hypocritical",
+                "clerical", "hysterical", "cynical", "rabbinical");
+        for (int i = 0; i < cats.size(); i++) {
+            d.put(cats.get(i), i);
+        }
+
+        List<String> catsRemoved = Arrays.asList("hypocritical",
+                "clerical", "hysterical", "cynical", "rabbinical");
+        for (int i = 0; i < catsRemoved.size(); i++) {
+            d.remove(catsRemoved.get(i));
+        }
+        
+        int catsLeft = cats.size() - catsRemoved.size();
+        
+        assertEquals("size() returned wrong number of elements", catsLeft, d.size());
+    }
+    
+    @Test
+    public void testGet() {
+        List<String> cats = Arrays.asList("practical", "dramatical",
+                "pragmatical", "fanatical", "oratorical", "delphioracle",
+                "skeptical", "dispeptical", "romantical", "pedantical",
+                "critical", "parasitical", "allegorical", "metaphorical",
+                "statistical", "mystical", "political", "hypocritical",
+                "clerical", "hysterical", "cynical", "rabbinical");
+        for (int i = 0; i < cats.size(); i++) {
+            d.put(cats.get(i), i);
+        }
+        for (int i = 0; i < cats.size(); i++) {
+        	int k = d.get(cats.get(i));
+        	assertEquals("get() returned the wrong value", k, i);
+        }
+    }
 
     @Test(expected = ConcurrentModificationException.class)
     public void testListIteratorConcurrent() {
