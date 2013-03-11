@@ -186,15 +186,24 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
 			current = root;
 			BinarySearchTreeEntry<K, V> result = null;
 			
+			try {
+				BinarySearchTree.this.get(current.getKey());
+			} catch (NoSuchElementException e) {
+				throw new ConcurrentModificationException();
+			}
+			
 			while (current != null) {
 				workList.push(current);
 				current = current.getLeft();
 			} 
+			
 			if (!workList.empty()) {
 				result = workList.pop();
 				current = result.getRight();
-			} 
-			return result;
+				return result;
+			} else {
+				throw new UnsupportedOperationException();
+			}
 		}
 		
 		@Override
